@@ -1,34 +1,21 @@
-object universitario {
-	method esClaseMedia() = true
-}
-
 class NivelDeEducacion {
-	method esClaseMedia() = false
-
-}
-object terciario inherits NivelDeEducacion {
-
+	var property esClaseMedia = false
 }
 
-object secundario inherits NivelDeEducacion {
-
-}
-
-object primario inherits NivelDeEducacion {
-
-}
+const universitario = new NivelDeEducacion(esClaseMedia=true)
+const terciario = new NivelDeEducacion()
+const secundario = new NivelDeEducacion()
+const primario = new NivelDeEducacion()
 
 object chapa {
-
 	method esBueno() = false
-
 }
 
 object material {
-
 	method esBueno() = true
-
 }
+
+object computadora {}
 
 class Pais {
 
@@ -54,14 +41,13 @@ class Localidad {
 	method esChica() = self.habitantes() < 500
 
 	method poblacionDeClaseMedia() = viviendas.sum({ vivienda => vivienda.poblacionDeClaseMedia() })
-	method viviendasHacinadas() = viviendas.count({ vivienda => vivienda.esHacinada() })
+	method viviendasHacinadas() = viviendas.count({ vivienda => vivienda.hacinada() })
 	method viviendasTotales() = viviendas.size()
 		
 
 }
 
 class FormularioReducido {
-
 
 	var property edad = 18
 	var property nivelDeEstudios
@@ -74,16 +60,16 @@ class Extendido inherits FormularioReducido {
 	var property descendienteDePueblosOriginarios = true
 	
 	override method claseMedia(){
-		return super() && tieneTrabajo
+		return super() || tieneTrabajo
 	}
 }
 
 class Vivienda {
 
-	const property estiloDeConstruccion = material
+	var property estiloDeConstruccion = material
 
 	method esClaseMedia() = estiloDeConstruccion.esBueno()
-
+	
 	method habitantes()
 
 	method poblacionDeClaseMedia() {
@@ -92,9 +78,6 @@ class Vivienda {
 	}
 }
 
-object computadora {
-
-}
 
 class ViviendaComun inherits Vivienda {
 
@@ -107,21 +90,16 @@ class ViviendaComun inherits Vivienda {
 	override method esClaseMedia() = super() && artefactos.contains(computadora) && self.alguienEsClaseMedia()
 	method alguienEsClaseMedia() = formularios.any({formulario => formulario.claseMedia()})
 
-	method esHacinada() = self.habitantes() > ambientes * 2
+	method hacinada() = self.habitantes() > ambientes * 2
 }
 
 class ViviendaColectiva inherits Vivienda {
 
-	var property superficie = 1
-	var property habitantes = 1
-
-	override method poblacionDeClaseMedia() {
-		if (self.esClaseMedia()) return self.habitantes()
-			return 0
-	}
+	var property superficie
+	var property habitantes
 
 	override method esClaseMedia() = super() && superficie > 100
-	method esHacinada() = (superficie/self.habitantes()) < 10
+	method hacinada() = superficie/self.habitantes() < 10
 
 }
 
